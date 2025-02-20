@@ -1,0 +1,54 @@
+<html>
+
+<head>
+    <title>
+        This is the main page.
+    </title>
+    <style>
+        div {
+            width: 400px;
+            border: 1px solid green;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="GET">
+        <h1>GET Request</h1>
+        <form method="GET"
+        action="{{ url_for('tasks') }}">
+        <button type="submit">GET</button>
+        </form>
+    </div>
+
+    <div class="POST">
+        <h1>POST request</h1>
+        <form method="POST"
+        action="{{ url_for('create_task') }}">
+        <input  type="text"
+                name="task_name"
+                placeholder="Create Task">
+        <input  type="text"
+                name="task_description"
+                placeholder="Task Description">
+        <button type="submit">POST</button>
+    </form>
+    </div>
+
+    <div class="DELETE">
+        <h1>DELETE request</h1>
+        <form method="DELETE"
+        action="{{ url_for('delete_task') }}">
+        <input  type="text"
+                name="task_name"
+                placeholder="Delete Task">
+        <button type="submit">DELETE</button>
+    </form>
+    </div>
+
+</body>
+
+</html>
