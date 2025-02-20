@@ -1,3 +1,25 @@
+<script>
+    function deleteTask() {
+    const task_name = document.getElementById('delete_task_name').value;
+
+    if (!task_name) {
+        alert('Task name is required');
+        return;
+    }
+
+    fetch(`/tasks/${encodeURIComponent(task_name)}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(result => {
+        alert(result.message || result.error);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
+
 <html>
 
 <head>
@@ -39,14 +61,9 @@
     </div>
 
     <div class="DELETE">
-        <h1>DELETE request</h1>
-        <form method="DELETE"
-        action="{{ url_for('delete_task') }}">
-        <input  type="text"
-                name="task_name"
-                placeholder="Delete Task">
-        <button type="submit">DELETE</button>
-    </form>
+        <h1>DELETE Request</h1>
+        <input type="text" id="delete_task_name" placeholder="Task Name">
+        <button type="button" onclick="deleteTask()">DELETE</button>
     </div>
 
 </body>

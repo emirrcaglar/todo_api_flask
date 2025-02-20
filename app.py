@@ -3,7 +3,7 @@ from flask import Flask, json, jsonify, render_template, request
 
 app = Flask(__name__)
 
-TASKS_FILE = "todo.txt"
+TASKS_FILE = "todo.json"
 
 def read_tasks():
     with open(TASKS_FILE, "r") as f:
@@ -16,7 +16,7 @@ def read_tasks():
 def write_tasks(tasks):
     with open(TASKS_FILE, "w") as f:
         for task in tasks:
-            f.write(json.dumps(task) + "\n")
+            f.write(json.dumps(task))
 
 @app.route('/', methods=['GET'])
 def view_form():
@@ -38,13 +38,19 @@ def create_task():
     
     
     # Prepare the task data for storage
-    task = json.dumps({
+    task = {
         "task_name" : task_name,
         "task_description" : task_description
-    })
+    }
 
-    # Write task to local txt file
-    write_tasks(task)
+    # Read file into tasks
+    tasks = read_tasks()
+
+    # Add new task to the tasks list
+    tasks.append(task)
+
+    # Write tasks to local txt file
+    write_tasks(tasks)
 
     # Return success message
     return jsonify({'message': f'Task "{task_name}" created successfully'}), 201
@@ -69,7 +75,8 @@ def delete_task(task_name):
         # Write the filtered tasks to the file
         write_tasks(updated_tasks)
 
-        return jsonify({'message': f'Deletion of {task_name} successful'})
+        # Print success message
+        return jsonify({'message': f'Deletion of {task_name} was successful'})
 
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
