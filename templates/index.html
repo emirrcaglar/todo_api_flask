@@ -1,30 +1,62 @@
 <script>
     function deleteTask() {
-    const task_name = document.getElementById('delete_task_name').value;
+        const task_name = document.getElementById('delete_task_name').value;
 
-    if (!task_name) {
-        alert('Task name is required');
-        return;
+        // Determine the URL based on whether task_name is provided
+        const url = task_name ? `/tasks/${encodeURIComponent(task_name)}` : '/tasks';
+
+        fetch(url, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(result => {
+            alert(result.message || result.error);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
-    fetch(`/tasks/${encodeURIComponent(task_name)}`, {
-        method: 'DELETE'
-    })
-    .then(response => response.json())
-    .then(result => {
-        alert(result.message || result.error);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
+    function creationSuccess() {
+        // Retrieve input values
+        const task_name = document.getElementById('create_task_name').value;
+        const task_description = document.getElementById('create_task_description').value;
+
+        // Validate input fields
+        if (!task_name || !task_description) {
+            alert('Task name and description are required');
+            return;
+        }
+
+        // Prepare the request body
+        const data = {
+            task_name: task_name,
+            task_description: task_description
+        };
+
+        // Send the POST request
+        fetch('/tasks/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'  // Specify that the request body is JSON
+            },
+            body: JSON.stringify(data)  // Convert the data to a JSON string
+        })
+        .then(response => response.json())
+        .then(result => {
+            alert(result.message || result.error);  // Display success or error message
+        })
+        .catch(error => {
+            console.error('Error:', error);  // Handle network errors
+        });
+    }
 </script>
 
 <html>
 
 <head>
     <title>
-        This is the main page.
+        To-Do API
     </title>
     <style>
         div {
@@ -50,19 +82,15 @@
         <h1>POST request</h1>
         <form method="POST"
         action="{{ url_for('create_task') }}">
-        <input  type="text"
-                name="task_name"
-                placeholder="Create Task">
-        <input  type="text"
-                name="task_description"
-                placeholder="Task Description">
+        <input  type="text" id="create_task_name" placeholder="Create Task">
+        <input  type="text" id="create_task_description" placeholder="Task Description">
         <button type="submit">POST</button>
     </form>
     </div>
 
     <div class="DELETE">
         <h1>DELETE Request</h1>
-        <input type="text" id="delete_task_name" placeholder="Task Name">
+        <input type="text" id="delete_task_name" placeholder="Delete Task">
         <button type="button" onclick="deleteTask()">DELETE</button>
     </div>
 
